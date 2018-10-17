@@ -3,6 +3,7 @@ import os
 import shutil
 
 '''
+处理数据集
 将dataset分割成两部分，按照2：8比
 20%一组为训练数据TrainingDataSet
 80%一组为测试数据TestingDataSet
