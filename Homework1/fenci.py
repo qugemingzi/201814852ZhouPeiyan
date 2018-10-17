@@ -2,6 +2,7 @@
 import jieba
 
 '''
+将文本分词处理
 测试分词工具jieba
 '''
 
