@@ -1,8 +1,11 @@
 # coding=utf-8
 import os
 import jieba
+import nltk
+from nltk.corpus import stopwords
+import re
 
-
+stpwords = []
 '''
 将文本分词处理
 测试分词工具jieba
@@ -33,32 +36,45 @@ def testjieba():
 
 
 '''
-分词.词性标注以及去停用词
-dealpath：中文数据预处理文件的路径
-savepath：中文数据预处理结果的保存路径
+通过nltk构建stpwords
 '''
 
 
-def cutTxtWord(srcpath, respath):
+def getStpwords():
+    stpwords = stopwords.words("english")
+    # for w in ['!', ',', '.', '?', ':', '-s', '-ly', '</s>', 's']:  # 删减符号
+    #     stpwords.append(w)
+    stpwords.append([' ', '\t', '\n'])
+    return stpwords
+
+
+'''
+分词.词性标注以及去停用词
+stpwords： 停用词表
+srcpath：中文数据预处理文件的路径
+respath：中文数据预处理结果的保存路径
+'''
+
+
+def cutTxtWord(srcpath, respath, stpwords):
     with open(srcpath, "r", encoding='utf-8') as f:
         txtlist = f.read()  # 读取待处理的文本
-    words = jieba.cut(txtlist, cut_all=False)  # 分词结果
-    cutresult = ""  # 单个文本：分词合并的结果
-    for word in words:
-        cutresult += word + " "
-    standdata(cutresult, respath)
+    porter = nltk.PorterStemmer()  # 词干分析
+    splitter = re.compile('[^a-zA-Z]')  # 去除非字母字符，形成分隔
+    words = [porter.stem(word.lower()) for word in splitter.split(txtlist)
+             if len(word) > 0 and word.lower() not in stpwords]
+    standdata(words, respath)
 
 
 '''
 分词.词性标注以及去停用词
-stopwordspath： 停用词路径
+stpwords： 停用词表
 read_folder_path ：中文数据预处理文件的路径
 write_folder_path ：中文数据预处理结果的保存路径
-filescount=300 #设置文件夹下文件最多多少个
 '''
 
 
-def cutFileWord(read_folder_path, write_folder_path):
+def cutFileWord(read_folder_path, write_folder_path, stpwords):
     # 获取待处理根目录下的所有文件
     files = os.listdir(read_folder_path)  # 得到文件夹下的所有文件名称
     j = 1
@@ -66,14 +82,13 @@ def cutFileWord(read_folder_path, write_folder_path):
         if j > len(files):
             break
         srcpath = os.path.join(read_folder_path, file)  # 处理单个文件的路径
-        with open(srcpath, "rb") as f:
+        with open(srcpath, "r", errors="replace") as f:
             txtlist = f.read()
-        words = jieba.cut(txtlist, cut_all=False)  # 分词结果
-        cutresult = ""  # 单个文本：分词合并的结果
-        for word in words:
-            cutresult += word + " "
-        respath = os.path.join(write_folder_path, file)
-        standdata(cutresult, respath)
+        porter = nltk.PorterStemmer()  # 词干分析
+        splitter = re.compile('[^a-zA-Z]')  # 去除非字母字符，形成分隔
+        words = [porter.stem(word.lower()) for word in splitter.split(txtlist)
+                 if len(word) > 0 and word.lower() not in stpwords]
+        standdata(words, os.path.join(write_folder_path, file))
         j += 1
 
 
@@ -85,20 +100,50 @@ flagresult:筛选过的结果
 
 def standdata(flagresult, respath):
     f2 = open(respath, "w", encoding='utf-8')
-    f2.write(flagresult)
+    flag = 0
+    for item in flagresult:
+        if len(item) > 2 and len(item) < 18:
+            if flag < 20:
+                f2.write(item + " ")
+            else:
+                f2.write("\n")
+                flag -= 20
+            flag += 1
+        else:
+            pass
     f2.close()
 
 
-# 测试单个文件
-srcpath = 'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestDivideSrc\\72052'
-respath = 'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestFenci\\72052'
+if __name__ == '__main__':
+    # 获取stpwords
+    stpwords = getStpwords()
 
-# 批量处理文件夹下的文件
-srcfolder_path = 'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestDivideSrc\\a'
-# srcfolder_path = '../Database/SogouC/FileNews/'
-# 分词处理后保存根路径
-resfolder_path = 'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestFenci\\fold'
+    # 测试单个文件
+    Test_srcpath = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestDivideSrc\\72052'
+    Test_respath = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestFenci\\72052'
 
-# 中文语料预处理器
-# cutTxtWord(srcpath, respath) # 单文本预处理器
-cutFileWord(srcfolder_path, resfolder_path)  # 多文本预处理器
+    # 批量处理文件夹下的文件
+    Test_srcfolder_path = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestDivideSrc\\c'
+    # 分词处理后保存根路径
+    Test_resfolder_path = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\Test\\TestFenci\\fold'
+
+    # 中文语料预处理器
+    # cutTxtWord(Test_srcpath, Test_respath, stpwords) # 单文本预处理器
+    # cutFileWord(Test_srcfolder_path, Test_resfolder_path, stpwords)  # 多文本预处理器
+
+    Training_srcfolder_path = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\TrainingDataSet'
+    Training_resfolder_path = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\TrainingDataSet-Divide'
+    Testing_srcfolder_path = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\TestingDataSet'
+    Testing_resfolder_path = \
+        'D:\\projects\\python\\repository\\201814852ZhouPeiyan\\Homework1\\DataSet\\TestingDataSet-Divide'
+    cutFileWord(Training_srcfolder_path, Training_resfolder_path, stpwords)  # 处理训练数据
+    print("训练数据已经分词完毕！")
+    cutFileWord(Testing_srcfolder_path, Testing_resfolder_path, stpwords)  # 处理测试数据
+    print("测试数据已经分词完毕！")
