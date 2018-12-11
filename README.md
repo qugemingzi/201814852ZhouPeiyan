@@ -70,8 +70,12 @@
 2018/12/11 14：50
 
   The Tweets dataset is in format of JSON like follows:
+  
   -{"text": "centrepoint winter white gala london", "cluster": 65}
+  
   -{"text": "mourinho seek killer instinct", "cluster": 96}
+  
   -{"text": "roundup golden globe won seduced johansson voice", "cluster": 72}
+  
   -{"text": "travel disruption mount storm cold air sweep south florida", "cluster": 140}
 
