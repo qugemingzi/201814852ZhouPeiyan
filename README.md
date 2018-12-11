@@ -57,3 +57,21 @@
 2018/12/11 14：33
   
   之前提交Homework2的时候忘记更新README了，思路步骤见实验报告。
+  
+# Homework 3: Clustering with sklearn
+任务：
+
+   -测试sklearn中以下聚类算法在tweets数据集上的聚类效果。
+   
+   -使用NMI(Normalized Mutual Information)作为评价指标。
+   
+# Deadline: 2018.12.25,23:00 (由于尹老师不忍心看我们备考别的科目，延长deadline且此为最后一个小作业/笑哭)
+
+2018/12/11 14：50
+
+  The Tweets dataset is in format of JSON like follows:
+  -{"text": "centrepoint winter white gala london", "cluster": 65}
+  -{"text": "mourinho seek killer instinct", "cluster": 96}
+  -{"text": "roundup golden globe won seduced johansson voice", "cluster": 72}
+  -{"text": "travel disruption mount storm cold air sweep south florida", "cluster": 140}
+
