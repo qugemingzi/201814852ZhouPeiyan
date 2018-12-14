@@ -21,5 +21,5 @@ result = Counter(list).most_common(1)
 print(type(result))
 print(result[0][1])
 
-for i in range(90):
+for i in range(2, 90, 3):
     print(i)
