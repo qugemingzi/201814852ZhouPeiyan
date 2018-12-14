@@ -79,3 +79,8 @@
   
   -{"text": "travel disruption mount storm cold air sweep south florida", "cluster": 140}
 
+2018/12/14 23：00
+
+  完成了Homework3，计算Tweets的tfidf矩阵和词频矩阵，使用sklearn的clusters方法，用NMI评估，分析评估效果。
+  
+  END
