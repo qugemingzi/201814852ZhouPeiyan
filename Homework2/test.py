@@ -10,5 +10,5 @@ z["b"] = Counter(y)
 print(z)
 z["c"] = z["a"] + z["b"]
 print(sum(z["c"].values()))
-print(z)
+print(z + "!")
 print(2 ** 5)
